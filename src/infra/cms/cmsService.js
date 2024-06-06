@@ -1,24 +1,34 @@
-export async function cmsService({
-  query
-}) {
+const TOKEN = process.env.DATO_TOKEN;
 
-  const pageContentRes = await fetch('https://graphql.datocms.com/', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
+export async function cmsService({ query }) {
+
+  try {
+    const pageContentRes = await fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer ' + TOKEN,
+      },
+      body: JSON.stringify({
+        query,
+      }),
     })
-  })
-  .then(async (res) => {
-    const body = await res.json();
-    return body;
-  })
+    .then(async (res) => {
+      const body = await res.json();
+      //console.log('Body: ', body);
+      if(!body.errors) return body;
 
-  console.log('Page content response', pageContentRes);
+      throw new Error(JSON.stringify(body));
+    });
 
-  return {
-    data: pageContentRes,
+    //console.log('Page content res: ', pageContentRes);
+
+    return {
+      data: pageContentRes.data,
+    }
+  }catch(err) {
+    throw new Error(err.message);
   }
+
+  
 }

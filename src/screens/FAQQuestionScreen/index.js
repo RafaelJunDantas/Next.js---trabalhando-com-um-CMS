@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Footer } from '../../components/commons/Footer';
 import { Menu } from '../../components/commons/Menu';
 import { Box, Text, theme } from '../../theme/components';
-import cmsService from '../../infra/cms/cmsService';
+import { cmsService } from '../../infra/cms/cmsService';
 
 export async function getStaticPaths() {
   return {
@@ -17,6 +17,8 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const { id } = params;
 
+  // https://graphql.datocms.com/
+  
   const contentQuery = `
     query {
       contentFaqQuestion {
@@ -27,26 +29,16 @@ export async function getStaticProps({ params }) {
       }
     }
   `;
-
   const { data } = await cmsService({
-    query: contentQuery,
+    query: contentQuery
   });
-  
-  console.log('Dados do CMS', data); 
+  //console.log('Dados do CMS: ', data); 
 
   return {
     props: {
       id,
-      title: 'Fake Title',
-      content: `
-        <h2>Primeiro Tópico</h2>
-        <p>paragrafo simples</p>
-        <p>outro paragrafo simples</p>
-        <ul>
-          <li>Item de lista 01</li>
-          <li>Item de lista 02</li>
-        </ul>
-      `,
+      title: data.contentFaqQuestion.title,
+      content: data.contentFaqQuestion.content,
     }
   }
 }
@@ -83,7 +75,10 @@ export default function FAQQuestionScreen({ title, content }) {
             {title}
           </Text>
 
-          <Box dangerouslySetInnerHTML={{ __html: content }} />
+          {/* <Box dangerouslySetInnerHTML={{ __html: content }} /> */}
+          <pre>
+            {JSON.stringify(content, null, 4)}
+          </pre>
         </Box>
       </Box>
 
