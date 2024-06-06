@@ -18,7 +18,6 @@ export async function getStaticProps({ params }) {
   const { id } = params;
 
   // https://graphql.datocms.com/
-  
   const contentQuery = `
     query {
       contentFaqQuestion {
