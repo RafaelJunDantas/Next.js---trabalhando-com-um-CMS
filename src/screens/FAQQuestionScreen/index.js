@@ -5,6 +5,7 @@ import { Box, Text, theme } from '../../theme/components';
 import { cmsService } from '../../infra/cms/cmsService';
 import { StructuredText, renderNodeRule } from 'react-datocms';
 import { isHeading } from 'datocms-structured-text-utils';
+import { pageHOC } from '../../components/wrappers/pageHOC';
 
 export async function getStaticPaths() {
   return {
@@ -30,6 +31,7 @@ export async function getStaticProps({ params, preview }) {
       }
     }
   `;
+  
   const { data } = await cmsService({
     query: contentQuery,
     preview,
@@ -44,7 +46,7 @@ export async function getStaticProps({ params, preview }) {
   }
 }
 
-export default function FAQQuestionScreen({ cmsContent }) {
+function FAQQuestionScreen({ cmsContent }) {
   return (
     <>
       <Head>
@@ -75,6 +77,7 @@ export default function FAQQuestionScreen({ cmsContent }) {
           <Text tag="h1" variant="heading1">
             {cmsContent.contentFaqQuestion.title}
           </Text>
+
           <StructuredText 
             data={cmsContent.contentFaqQuestion.content}
             customNodeRules={[
@@ -92,7 +95,9 @@ export default function FAQQuestionScreen({ cmsContent }) {
         </Box>
       </Box>
       
-      <Footer description={cmsContent.globalContent.globalFooter.description}/>
+      <Footer />
     </>
   )
 }
+
+export default pageHOC(FAQQuestionScreen);
