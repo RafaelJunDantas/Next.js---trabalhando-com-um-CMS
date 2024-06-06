@@ -1,4 +1,4 @@
-const TOKEN = process.env.DATO_TOKEN_KEY;
+const TOKEN = process.env.DATO_TOKEN_KEY_READ;
 
 export async function cmsService({ query }) {
 
